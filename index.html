@@ -108,9 +108,8 @@
     }
     .tt-hero-video {
       position: absolute; inset: 0; width: 100%; height: 100%;
-      object-fit: cover; opacity: 0; transition: opacity 3s ease;
+      object-fit: cover; opacity: 0.3; transition: opacity 3s ease;
     }
-    .tt-hero-video.loaded { opacity: 0.3; }
     .tt-hero-overlay {
       position: absolute; inset: 0;
       background: radial-gradient(circle at center, rgba(5,5,5,0.1) 0%, rgba(5,5,5,0.7) 100%),
@@ -499,20 +498,6 @@
       text-transform: uppercase; color: rgba(200,168,130,0.5);
     }
 
-    /* ── CURSOR ── */
-    #tt-cursor {
-      width: 20px; height: 20px;
-      background: var(--gold);
-      border-radius: 50%;
-      position: fixed;
-      pointer-events: none;
-      z-index: 10000;
-      transition: transform 0.1s ease-out, width 0.3s, height 0.3s, background 0.3s, border-radius 0.3s;
-      mix-blend-mode: difference;
-    }
-    .cursor-hover { width: 50px !important; height: 50px !important; background: transparent !important; border: 1px solid var(--gold) !important; }
-    .cursor-magnetic { transform: scale(3); background: rgba(200,168,130,0.2) !important; border: none !important; }
-
     /* ── ANIMATIONS ── */
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(30px) scale(0.98); }
@@ -544,7 +529,6 @@
 </head>
 <body>
 
-<div id="tt-cursor"></div>
 <div class="tt-noise"></div>
 <div class="tt-progress-bar" id="ttProgressBar"></div>
 
@@ -795,44 +779,6 @@
 </section>
 
 <script>
-  // Custom Cursor
-  const cursor = document.getElementById('tt-cursor');
-  let mouseX = 0, mouseY = 0;
-  let cursorX = 0, cursorY = 0;
-
-  document.addEventListener('mousemove', e => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-  });
-
-  function animateCursor() {
-    cursorX += (mouseX - cursorX) * 0.15;
-    cursorY += (mouseY - cursorY) * 0.15;
-    cursor.style.transform = `translate(${cursorX - cursor.offsetWidth/2}px, ${cursorY - cursor.offsetHeight/2}px)`;
-    requestAnimationFrame(animateCursor);
-  }
-  animateCursor();
-
-  document.querySelectorAll('a, button, .tt-marquee-item, input, textarea, select, .tt-tag, .tt-diff-card').forEach(el => {
-    el.addEventListener('mouseenter', () => cursor.classList.add('cursor-hover'));
-    el.addEventListener('mouseleave', () => cursor.classList.remove('cursor-hover'));
-    
-    // Magnetic effect for tags and buttons
-    if(el.classList.contains('tt-tag') || el.classList.contains('tt-hero-cta') || el.classList.contains('back-cta')) {
-      el.addEventListener('mousemove', (e) => {
-        const rect = el.getBoundingClientRect();
-        const x = e.clientX - rect.left - rect.width / 2;
-        const y = e.clientY - rect.top - rect.height / 2;
-        el.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
-        cursor.classList.add('cursor-magnetic');
-      });
-      el.addEventListener('mouseleave', () => {
-        el.style.transform = `translate(0, 0)`;
-        cursor.classList.remove('cursor-magnetic');
-      });
-    }
-  });
-
   // Lenis Initialization
   const lenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
   function raf(time) {
